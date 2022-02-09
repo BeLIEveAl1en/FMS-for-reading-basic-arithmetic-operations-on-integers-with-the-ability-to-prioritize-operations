@@ -1,9 +1,12 @@
-package fms2;
+package com.artem.math.validator;
+
+import javax.crypto.CipherSpi;
 
 public class StateMachine {
 
     private char[] str = new char[0];
     private int position = 0;
+    private int counter = 0;
 
     public static State state = new State(0);
 
@@ -14,7 +17,7 @@ public class StateMachine {
             if (!validationSymbol())
                 return ValidationResult.unexpectedSymbol(str[position], position);
         }
-        if (state.getState() == 4){
+        if (state.getState() == 3 && counter == 0){
             result = ValidationResult.valid();
         }
         else {
@@ -23,13 +26,18 @@ public class StateMachine {
         return result;
     }
 
+    // 21 /_700 + 485
     public boolean validationSymbol() {
 
         char symbol = str[position];
         switch (state.getState()){
             case 0 :
-                if (symbol == '-' || Character.isDigit(symbol) || symbol == '('){
+                if (symbol == '-' || Character.isDigit(symbol)){
                     state.setState(1);
+                }
+                else if(symbol == '('){
+                    counter++;
+                    state.setState(0);
                 }
                 else {
                     return false;
@@ -40,22 +48,10 @@ public class StateMachine {
                 if (Character.isDigit(symbol)){
                     state.setState(1);
                 }
-                else if (choice(symbol)){
-                    state.setState(3);
-                }
-                else if (Character.isWhitespace(symbol)){
+                else if (isOperator(symbol)){
                     state.setState(2);
                 }
-                else {
-                    return false;
-                }
-                return true;
-
-            case 5 :
-                if (symbol == '('){
-                    state.setState(5);
-                }
-                else if(Character.isDigit(symbol) || Character.isWhitespace(symbol)){
+                else if (Character.isWhitespace(symbol)){
                     state.setState(1);
                 }
                 else {
@@ -64,11 +60,15 @@ public class StateMachine {
                 return true;
 
             case 2 :
-                if (choice(symbol)){
+                if(symbol == '-' || Character.isDigit(symbol)){
                     state.setState(3);
                 }
-                else if (Character.isDigit(symbol) || Character.isWhitespace(symbol) || symbol == ')'){
+                else if(Character.isWhitespace(symbol)){
                     state.setState(2);
+                }
+                else if(symbol == '('){
+                    counter++;
+                    state.setState(0);
                 }
                 else {
                     return false;
@@ -76,36 +76,28 @@ public class StateMachine {
                 return true;
 
             case 3 :
-                if (Character.isDigit(symbol) || symbol == '-'){
-                    state.setState(4);
-                }
-                else if (Character.isWhitespace(symbol)){
+                if (Character.isDigit(symbol)){
                     state.setState(3);
                 }
-                else if (symbol == '('){
+                else if(symbol == ')'){
+                    counter--;
+                    state.setState(3);
+                }
+                else if(isOperator(symbol)){
+                    state.setState(3);
+                }
+                else if(Character.isWhitespace(symbol)) {
                     state.setState(1);
                 }
-                else{
-                    return false;
-                }
-                return true;
-
-            case 4 :
-                if (Character.isDigit(symbol) || symbol == ')'){
-                    state.setState(4);
-                }
-                else if(Character.isDigit(symbol) || Character.isWhitespace(symbol)){
-                    state.setState(2);
-                }
                 else {
-                    state.setState(5);
+                    return false;
                 }
                 return true;
         }
         return false;
     }
 
-    public boolean choice(char symbol){
+    public boolean isOperator(char symbol){
         switch (symbol){
             case '+' :
             case '/' :
@@ -113,7 +105,7 @@ public class StateMachine {
             case '-' :
                 return true;
 
-            default:
+            default :
                 return false;
         }
     }

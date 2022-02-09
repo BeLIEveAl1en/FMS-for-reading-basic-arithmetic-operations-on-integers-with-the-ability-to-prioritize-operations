@@ -1,4 +1,4 @@
-package fms2;
+package com.artem.math.validator;
 
 public class State {
 

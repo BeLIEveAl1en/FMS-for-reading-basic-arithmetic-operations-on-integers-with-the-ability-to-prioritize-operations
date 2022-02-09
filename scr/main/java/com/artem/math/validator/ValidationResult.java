@@ -1,6 +1,4 @@
-package fms2;
-
-import java.util.Objects;
+package com.artem.math.validator;
 
 public class ValidationResult {
     private boolean isValid;
