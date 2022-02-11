@@ -45,16 +45,10 @@ public class StateMachine {
                 return true;
 
             case 1 :
-                if (Character.isDigit(symbol)){
-                    state.setState(1);
-                }
-                else if (isOperator(symbol)){
+                if (isOperator(symbol)){
                     state.setState(2);
                 }
-                else if (Character.isWhitespace(symbol)){
-                    state.setState(1);
-                }
-                else {
+                else if(!Character.isDigit(symbol) && !Character.isWhitespace(symbol)){
                     return false;
                 }
                 return true;
@@ -63,33 +57,24 @@ public class StateMachine {
                 if(symbol == '-' || Character.isDigit(symbol)){
                     state.setState(3);
                 }
-                else if(Character.isWhitespace(symbol)){
-                    state.setState(2);
-                }
                 else if(symbol == '('){
                     counter++;
                     state.setState(0);
                 }
-                else {
+                else if (!Character.isWhitespace(symbol)){
                     return false;
                 }
                 return true;
 
             case 3 :
-                if (Character.isDigit(symbol)){
-                    state.setState(3);
-                }
-                else if(symbol == ')'){
+                if(symbol == ')'){
                     counter--;
-                    state.setState(3);
-                }
-                else if(isOperator(symbol)){
                     state.setState(3);
                 }
                 else if(Character.isWhitespace(symbol)) {
                     state.setState(1);
                 }
-                else {
+                else if(!Character.isDigit(symbol) && !isOperator(symbol)){
                     return false;
                 }
                 return true;
