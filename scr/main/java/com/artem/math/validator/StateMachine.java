@@ -8,7 +8,7 @@ public class StateMachine {
     private int position = 0;
     private int counter = 0;
 
-    public static State state = new State(0);
+    private final State state = new State(0);
 
     public ValidationResult validate(String inputStr){
         str = inputStr.toCharArray();
