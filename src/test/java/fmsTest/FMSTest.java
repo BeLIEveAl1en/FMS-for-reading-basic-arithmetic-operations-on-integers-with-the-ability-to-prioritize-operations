@@ -7,21 +7,6 @@ import org.junit.Test;
 
 
 public class FMSTest {
-    public void shouldPass(String str){
-        StateMachine stateMachine = new StateMachine();
-
-        ValidationResult result = stateMachine.validate(str);
-
-        Assert.assertTrue(result.getComment(), result.isValid());
-    }
-
-    public void shouldFail(String str){
-        StateMachine stateMachine = new StateMachine();
-
-        ValidationResult result = stateMachine.validate(str);
-
-        Assert.assertFalse(result.getComment(), result.isValid());
-    }
 
     @Test
     public void shouldPassWithWhitespace(){
@@ -34,12 +19,12 @@ public class FMSTest {
     }
 
     @Test
-    public void shouldPassWithOperator(){
+    public void shouldPassWithNegativeNumber(){
         shouldPass("-21 / -700 + -485");
     }
 
     @Test
-    public void shouldPassWithOperatorAndWithoutWhitespace(){
+    public void shouldPassWithNegativeNumberAndWithoutWhitespace(){
         shouldPass("-21/-700+-485");
     }
 
@@ -76,5 +61,21 @@ public class FMSTest {
     @Test
     public void shouldFailWithOneBracket(){
         shouldFail("21 / (700 + 485");
+    }
+
+    public void shouldPass(String str){
+        StateMachine stateMachine = new StateMachine();
+
+        ValidationResult result = stateMachine.validate(str);
+
+        Assert.assertTrue(result.getComment(), result.isValid());
+    }
+
+    public void shouldFail(String str){
+        StateMachine stateMachine = new StateMachine();
+
+        ValidationResult result = stateMachine.validate(str);
+
+        Assert.assertFalse(result.getComment(), result.isValid());
     }
 }
